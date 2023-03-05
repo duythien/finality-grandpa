@@ -24,7 +24,7 @@ use crate::{
 	},
 	weights::VoterWeight,
 };
-
+//#[cfg((test))]
 /// A (non-empty) set of voters and associated weights.
 ///
 /// A `VoterSet` identifies all voters that are permitted to vote in a round
@@ -40,6 +40,11 @@ pub struct VoterSet<Id: Eq + Ord> {
 	total_weight: VoterWeight,
 }
 
+// impl<Id: Default + std::cmp::Ord> Default for VoterSet<Id> {
+// 	fn default() -> Self {
+// 		Self { voters: vec![], threshold: Default::default(), total_weight: Default::default() }
+// 	}
+// }
 impl<Id: Eq + Ord> VoterSet<Id> {
 	/// Create a voter set from a weight distribution produced by the given iterator.
 	///
@@ -83,7 +88,13 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 
 		if voters.is_empty() {
 			// No non-zero weights; the set would be empty.
-			return None
+			//return None
+			let total_weight = VoterWeight::new(123456789).expect("voters nonempty; qed");
+			return Some(VoterSet {
+				voters: vec![],
+				total_weight,
+				threshold: threshold(total_weight),
+			});
 		}
 
 		let voters = voters
@@ -96,7 +107,7 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 			.collect();
 
 		let total_weight = VoterWeight::new(total_weight).expect("voters nonempty; qed");
-
+		println!("--------------------{:?}", total_weight);
 		Some(VoterSet { voters, total_weight, threshold: threshold(total_weight) })
 	}
 
@@ -201,7 +212,7 @@ mod tests {
 				//
 				// the easiest thing to do is to just retry generating another instance.
 				if let Some(set) = VoterSet::new(ids.into_iter().zip(weights)) {
-					break set
+					break set;
 				}
 			}
 		}
@@ -234,7 +245,7 @@ mod tests {
 
 			// this validator set is invalid
 			if total_weight > u64::max_value() as u128 {
-				return
+				return;
 			}
 
 			let expected = VoterWeight::new(total_weight as u64);
