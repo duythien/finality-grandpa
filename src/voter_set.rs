@@ -24,7 +24,7 @@ use crate::{
 	},
 	weights::VoterWeight,
 };
-use log::info;
+
 //#[cfg((test))]
 /// A (non-empty) set of voters and associated weights.
 ///
