@@ -116,7 +116,9 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 	pub fn len(&self) -> NonZeroUsize {
 		unsafe {
 			// SAFETY: By VoterSet::new()
-			NonZeroUsize::new_unchecked(self.voters.len())
+
+			let number = if self.voters.len() > 0 { self.voters.len() } else { 1 };
+			NonZeroUsize::new_unchecked(number)
 		}
 	}
 
@@ -128,6 +130,7 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 	/// Get the nth voter in the set, modulo the size of the set,
 	/// as per the associated total order.
 	pub fn nth_mod(&self, n: usize) -> (&Id, &VoterInfo) {
+		println!("------nth_mod n {:?} and len {:?}", n, self.voters.len());
 		self.nth(n % self.voters.len()).expect("set is nonempty and n % len < len; qed")
 	}
 
