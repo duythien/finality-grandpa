@@ -134,7 +134,7 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 		//info!("------nth_mod n {:?} and len {:?}", n, self.voters.len());
 		//let number = if n > 0 { n } else { 1 };
 		let len = if self.voters.len() > 0 { self.voters.len() } else { 1 };
-		let nth = if n % len < len { n % len + 2 } else { n };
+		let nth = if n % len < len { n % 20 } else { n };
 		self.nth(nth % len).expect("set is nonempty and n % len < len; qed")
 	}
 
