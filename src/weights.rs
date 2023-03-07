@@ -95,6 +95,9 @@ impl fmt::Display for VoterWeight {
 
 impl VoterWeight {
 	pub fn new(weight: u64) -> Option<Self> {
+		if weight < 1 {
+			return NonZeroU64::new(1).map(Self);
+		}
 		NonZeroU64::new(weight).map(Self)
 	}
 

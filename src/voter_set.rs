@@ -88,13 +88,7 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 
 		if voters.is_empty() {
 			// No non-zero weights; the set would be empty.
-			//return None
-			let total_weight = VoterWeight::new(123456789).expect("voters nonempty;");
-			return Some(VoterSet {
-				voters: vec![],
-				total_weight,
-				threshold: threshold(total_weight),
-			});
+			//return None;
 		}
 
 		let voters = voters
@@ -107,7 +101,6 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 			.collect();
 
 		let total_weight = VoterWeight::new(total_weight).expect("voters nonempty; qed");
-		//println!("--------------------{:?}", total_weight);
 		Some(VoterSet { voters, total_weight, threshold: threshold(total_weight) })
 	}
 
