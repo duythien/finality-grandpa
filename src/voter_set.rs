@@ -24,6 +24,7 @@ use crate::{
 	},
 	weights::VoterWeight,
 };
+use log::info;
 //#[cfg((test))]
 /// A (non-empty) set of voters and associated weights.
 ///
@@ -130,7 +131,7 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 	/// Get the nth voter in the set, modulo the size of the set,
 	/// as per the associated total order.
 	pub fn nth_mod(&self, n: usize) -> (&Id, &VoterInfo) {
-		log::info!("------nth_mod n {:?} and len {:?}", n, self.voters.len());
+		info!("------nth_mod n {:?} and len {:?}", n, self.voters.len());
 		self.nth(n % self.voters.len()).expect("set is nonempty and n % len < len; qed")
 	}
 
