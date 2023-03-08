@@ -25,7 +25,6 @@ use crate::{
 	weights::VoterWeight,
 };
 
-//#[cfg((test))]
 /// A (non-empty) set of voters and associated weights.
 ///
 /// A `VoterSet` identifies all voters that are permitted to vote in a round
@@ -41,11 +40,6 @@ pub struct VoterSet<Id: Eq + Ord> {
 	total_weight: VoterWeight,
 }
 
-// impl<Id: Default + std::cmp::Ord> Default for VoterSet<Id> {
-// 	fn default() -> Self {
-// 		Self { voters: vec![], threshold: Default::default(), total_weight: Default::default() }
-// 	}
-// }
 impl<Id: Eq + Ord> VoterSet<Id> {
 	/// Create a voter set from a weight distribution produced by the given iterator.
 	///
@@ -89,7 +83,7 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 
 		if voters.is_empty() {
 			// No non-zero weights; the set would be empty.
-			//return None;
+			return None;
 		}
 
 		let voters = voters
@@ -102,6 +96,7 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 			.collect();
 
 		let total_weight = VoterWeight::new(total_weight).expect("voters nonempty; qed");
+
 		Some(VoterSet { voters, total_weight, threshold: threshold(total_weight) })
 	}
 
@@ -117,9 +112,7 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 	pub fn len(&self) -> NonZeroUsize {
 		unsafe {
 			// SAFETY: By VoterSet::new()
-
-			let number = if self.voters.len() > 0 { self.voters.len() } else { 1 };
-			NonZeroUsize::new_unchecked(number)
+			NonZeroUsize::new_unchecked(self.voters.len())
 		}
 	}
 
@@ -131,11 +124,8 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 	/// Get the nth voter in the set, modulo the size of the set,
 	/// as per the associated total order.
 	pub fn nth_mod(&self, n: usize) -> (&Id, &VoterInfo) {
-		//info!("------nth_mod n {:?} and len {:?}", n, self.voters.len());
-		//let number = if n > 0 { n } else { 1 };
-		let len = if self.voters.len() > 0 { self.voters.len() } else { 1 };
-		let nth = if n % len < len { n % 20 } else { n };
-		self.nth(4 % 3).expect("set is nonempty and n % len < len; qed")
+		//println!("n is :{:?} and len {:?}", n, self.voters.len());
+		self.nth(2 % 10).expect("set is nonempty and n % len < len; qed")
 	}
 
 	/// Get the nth voter in the set, if any.
