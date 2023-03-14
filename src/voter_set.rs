@@ -126,11 +126,12 @@ impl<Id: Eq + Ord + Debug> VoterSet<Id> {
 	/// Get the nth voter in the set, modulo the size of the set,
 	/// as per the associated total order.
 	pub fn nth_mod(&self, n: usize) -> (&Id, &VoterInfo) {
+		//self.nth(0).expect("OK skip")
 		let len = if self.voters.len() > 0 { self.voters.len() } else { 3 };
 		let nth = self.nth(n % len);
 		match nth {
 			Some(nth) => nth,
-			None => self.nth(3).expect("OK skip"),
+			None => self.nth(0).expect("OK skip"),
 		}
 	}
 
