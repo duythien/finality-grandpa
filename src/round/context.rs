@@ -17,11 +17,11 @@
 
 use crate::{
 	bitfield::{Bit1, Bitfield},
+	std::fmt::Debug,
 	std::ops::AddAssign,
 	voter_set::{VoterInfo, VoterSet},
 	weights::VoteWeight,
 };
-use std::fmt::Debug;
 
 use super::Phase;
 
@@ -102,7 +102,7 @@ impl Vote {
 	/// if it is contained in that set.
 	fn voter<'a, Id>(&'a self, vs: &'a VoterSet<Id>) -> Option<(&'a Id, &'a VoterInfo)>
 	where
-		Id: Eq + Ord + std::fmt::Debug,
+		Id: Eq + Ord + Debug,
 	{
 		vs.nth(self.bit.position / 2)
 	}
@@ -139,7 +139,7 @@ impl AddAssign<&Vote> for VoteNode {
 /// of vote-bits in the context of the given set of voters.
 fn weight<V, I>(bits: I, voters: &VoterSet<V>) -> VoteWeight
 where
-	V: Eq + Ord + std::fmt::Debug,
+	V: Eq + Ord + Debug,
 	I: Iterator<Item = Bit1>,
 {
 	let mut total = VoteWeight(0);
