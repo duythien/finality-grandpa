@@ -131,7 +131,7 @@ impl<Id: Eq + Ord + Debug> VoterSet<Id> {
 		let nth = self.nth(n % len);
 		match nth {
 			Some(nth) => nth,
-			None => self.nth(0).expect("OK skip"),
+			None => (&self.voters[0].0, &self.voters[0].1),
 		}
 	}
 
