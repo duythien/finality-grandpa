@@ -21,6 +21,7 @@ use crate::{
 	voter_set::{VoterInfo, VoterSet},
 	weights::VoteWeight,
 };
+use std::fmt::Debug;
 
 use super::Phase;
 
@@ -32,7 +33,7 @@ pub struct Context<T: Ord + Eq> {
 	equivocations: Bitfield,
 }
 
-impl<T: Ord + Eq + std::fmt::Debug> Context<T> {
+impl<T: Ord + Eq + Debug> Context<T> {
 	/// Create a new context for a round with the given set of voters.
 	pub fn new(voters: VoterSet<T>) -> Self {
 		Context { voters, equivocations: Bitfield::new() }

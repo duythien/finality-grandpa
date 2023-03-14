@@ -17,6 +17,7 @@
 //! protocol.
 
 use crate::{
+	std::fmt::Debug,
 	std::{
 		collections::{btree_map::Entry, BTreeMap},
 		num::{NonZeroU64, NonZeroUsize},
@@ -40,7 +41,7 @@ pub struct VoterSet<Id: Eq + Ord> {
 	total_weight: VoterWeight,
 }
 
-impl<Id: Eq + Ord + std::fmt::Debug> VoterSet<Id> {
+impl<Id: Eq + Ord + Debug> VoterSet<Id> {
 	/// Create a voter set from a weight distribution produced by the given iterator.
 	///
 	/// If the distribution contains multiple weights for the same voter ID, they are
@@ -190,7 +191,7 @@ mod tests {
 	use quickcheck::*;
 	use rand::{seq::SliceRandom, thread_rng};
 
-	impl<Id: Arbitrary + Eq + Ord + std::fmt::Debug> Arbitrary for VoterSet<Id> {
+	impl<Id: Arbitrary + Eq + Ord + Debug> Arbitrary for VoterSet<Id> {
 		fn arbitrary(g: &mut Gen) -> VoterSet<Id> {
 			loop {
 				let mut ids = Vec::<Id>::arbitrary(g);
