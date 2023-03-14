@@ -32,7 +32,7 @@ pub struct Context<T: Ord + Eq> {
 	equivocations: Bitfield,
 }
 
-impl<T: Ord + Eq> Context<T> {
+impl<T: Ord + Eq + std::fmt::Debug> Context<T> {
 	/// Create a new context for a round with the given set of voters.
 	pub fn new(voters: VoterSet<T>) -> Self {
 		Context { voters, equivocations: Bitfield::new() }
@@ -101,7 +101,7 @@ impl Vote {
 	/// if it is contained in that set.
 	fn voter<'a, Id>(&'a self, vs: &'a VoterSet<Id>) -> Option<(&'a Id, &'a VoterInfo)>
 	where
-		Id: Eq + Ord,
+		Id: Eq + Ord + std::fmt::Debug,
 	{
 		vs.nth(self.bit.position / 2)
 	}
@@ -138,7 +138,7 @@ impl AddAssign<&Vote> for VoteNode {
 /// of vote-bits in the context of the given set of voters.
 fn weight<V, I>(bits: I, voters: &VoterSet<V>) -> VoteWeight
 where
-	V: Eq + Ord,
+	V: Eq + Ord + std::fmt::Debug,
 	I: Iterator<Item = Bit1>,
 {
 	let mut total = VoteWeight(0);
@@ -213,8 +213,8 @@ mod tests {
 
 				// We only expect the weight to increase if the voter did not
 				// start out as an equivocator and did not yet vote.
-				if !ctx.equivocations.test_bit(vote.bit.position) &&
-					!n.bits.test_bit(vote.bit.position)
+				if !ctx.equivocations.test_bit(vote.bit.position)
+					&& !n.bits.test_bit(vote.bit.position)
 				{
 					expected = expected + v.weight();
 				}

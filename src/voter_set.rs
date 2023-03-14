@@ -40,7 +40,7 @@ pub struct VoterSet<Id: Eq + Ord> {
 	total_weight: VoterWeight,
 }
 
-impl<Id: Eq + Ord> VoterSet<Id> {
+impl<Id: Eq + Ord + std::fmt::Debug> VoterSet<Id> {
 	/// Create a voter set from a weight distribution produced by the given iterator.
 	///
 	/// If the distribution contains multiple weights for the same voter ID, they are
@@ -83,7 +83,7 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 
 		if voters.is_empty() {
 			// No non-zero weights; the set would be empty.
-			return None;
+			//return None;
 		}
 
 		let voters = voters
@@ -96,6 +96,7 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 			.collect();
 
 		let total_weight = VoterWeight::new(total_weight).expect("voters nonempty; qed");
+		//println!("------{:?}", voters);
 
 		Some(VoterSet { voters, total_weight, threshold: threshold(total_weight) })
 	}
@@ -124,8 +125,11 @@ impl<Id: Eq + Ord> VoterSet<Id> {
 	/// Get the nth voter in the set, modulo the size of the set,
 	/// as per the associated total order.
 	pub fn nth_mod(&self, n: usize) -> (&Id, &VoterInfo) {
-		//println!("n is :{:?} and len {:?}", n, self.voters.len());
-		self.nth(2 % 10).expect("set is nonempty and n % len < len; qed")
+		let nth = self.nth(n % self.voters.len());
+		match nth {
+			Some(nth) => nth,
+			None => self.nth(1 % 3).expect("OK skip"),
+		}
 	}
 
 	/// Get the nth voter in the set, if any.
@@ -186,7 +190,7 @@ mod tests {
 	use quickcheck::*;
 	use rand::{seq::SliceRandom, thread_rng};
 
-	impl<Id: Arbitrary + Eq + Ord> Arbitrary for VoterSet<Id> {
+	impl<Id: Arbitrary + Eq + Ord + std::fmt::Debug> Arbitrary for VoterSet<Id> {
 		fn arbitrary(g: &mut Gen) -> VoterSet<Id> {
 			loop {
 				let mut ids = Vec::<Id>::arbitrary(g);
@@ -218,7 +222,7 @@ mod tests {
 			} else {
 				assert!(
 					// either no authority has a valid weight
-					v.iter().all(|(_, w)| w == &0) ||
+					//v.iter().all(|(_, w)| w == &0) ||
 					// or the total weight overflows a u64
 					v.iter().map(|(_, w)| *w as u128).sum::<u128>() > u64::max_value() as u128
 				);
